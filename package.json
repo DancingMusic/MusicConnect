@@ -1,0 +1,51 @@
+{
+  "name": "@dancingmusic/music-connect",
+  "version": "0.1.0",
+  "description": "Music data source connectors for DancingMusic",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./netease": {
+      "types": "./dist/connectors/netease/index.d.ts",
+      "import": "./dist/connectors/netease/index.js",
+      "require": "./dist/connectors/netease/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts src/connectors/netease/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts src/connectors/netease/index.ts --format esm,cjs --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "dancingmusic",
+    "music",
+    "connector",
+    "netease",
+    "data-source"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@dancingmusic/music-store-sdk": ">=0.1.0"
+  },
+  "devDependencies": {
+    "@dancingmusic/music-store-sdk": "file:/Users/wuguangliang/workspace/DancingMusicWorkspace/DancingMusic/.claude/worktrees/elastic-bhabha-ada1fe/submodules/MusicStoreSdk",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}
