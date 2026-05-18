@@ -6,7 +6,7 @@ import type {
   MusicLyrics,
   MusicListQuery,
   MusicTrack,
-} from "@dancingmusic/music-store-sdk";
+} from "@dancingmusic/music-store";
 import { NeteaseApi } from "./api";
 import type { NeteaseSong } from "./api";
 import { parseLrc, mergeLyrics } from "./lyrics-parser";

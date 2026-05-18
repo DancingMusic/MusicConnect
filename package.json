@@ -41,10 +41,10 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@dancingmusic/music-store-sdk": ">=0.1.0"
+    "@dancingmusic/music-store": ">=0.1.0"
   },
   "devDependencies": {
-    "@dancingmusic/music-store-sdk": "file:/Users/wuguangliang/workspace/DancingMusicWorkspace/DancingMusic/.claude/worktrees/elastic-bhabha-ada1fe/submodules/MusicStoreSdk",
+    "@dancingmusic/music-store": "file:/Users/wuguangliang/workspace/DancingMusicWorkspace/DancingMusic/.claude/worktrees/elastic-bhabha-ada1fe/submodules/MusicStore",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0",
     "vitest": "^4.1.6"
