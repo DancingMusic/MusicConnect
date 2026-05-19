@@ -21,6 +21,7 @@ function toMusicTrack(song: NeteaseSong): MusicTrack {
     title: song.name,
     artist: song.ar.map(a => a.name).join(", "),
     album: song.al.name,
+    coverUrl: song.al.picUrl,
     durationSec: Math.round(song.dt / 1000),
     price: 0,
     currency: "CNY",
