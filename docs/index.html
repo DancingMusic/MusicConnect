@@ -1,745 +1,394 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MusicConnect — Documentation</title>
-  <style>
-    :root, [data-theme="light"] {
-      --bg: #fafafa; --surface: #ffffff; --fg: #0f0f0f; --fg-2: #1a1a1a;
-      --muted: #6b6b6b; --meta: #888888;
-      --border: #e5e5e5; --border-soft: #f0f0f0;
-      --accent: #2f6feb; --accent-on: #ffffff;
-      --code-bg: #1e1e1e; --code-fg: #d4d4d4;
-      --search-bg: var(--bg); --search-border: var(--border);
-      --mark-bg: #fff3bf; --mark-fg: #0f0f0f;
-    }
-    [data-theme="dark"] {
-      --bg: #111111; --surface: #1a1a1a; --fg: #e5e5e5; --fg-2: #cccccc;
-      --muted: #999999; --meta: #777777;
-      --border: #2a2a2a; --border-soft: #222222;
-      --accent: #5b9bf5; --accent-on: #111111;
-      --code-bg: #0d0d0d; --code-fg: #d4d4d4;
-      --search-bg: #1a1a1a; --search-border: #333;
-      --mark-bg: #5b4a00; --mark-fg: #fef3c7;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; font-size: 16px; line-height: 1.6; color: var(--fg); background: var(--bg); transition: background .2s, color .2s; }
-    mark { background: var(--mark-bg); color: var(--mark-fg); border-radius: 2px; padding: 0 2px; }
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MusicConnect — Connector Reference</title>
+    <style>
+      :root {
+        --bg: #0a0f1e;
+        --bg-soft: #121b31;
+        --panel: #0f1930;
+        --line: #223255;
+        --text: #e8edf8;
+        --muted: #8ea3bf;
+        --link: #79d2ff;
+      }
 
-    /* ── Layout ── */
-    .doc-layout { display: grid; grid-template-columns: 220px minmax(0,1fr) 200px; min-height: 100vh; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at 15% 10%, #131c38 0%, var(--bg) 45%, #070b18 100%);
+      }
 
-    /* ── Nav ── */
-    .doc-nav { position: sticky; top: 0; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border); background: var(--surface); padding: 24px 0 16px; display: flex; flex-direction: column; }
-    .nav-head { padding: 0 20px; margin-bottom: 16px; }
-    .nav-head h2 { font-size: 14px; font-weight: 600; color: var(--fg); }
-    .nav-head span { font-size: 12px; color: var(--meta); }
-    .nav-toolbar { display: flex; gap: 6px; padding: 0 16px; margin-bottom: 12px; }
-    .nav-toolbar button { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); cursor: pointer; color: var(--muted); font-size: 14px; display: flex; align-items: center; justify-content: center; transition: border-color .15s, color .15s; }
-    .nav-toolbar button:hover { border-color: var(--accent); color: var(--accent); }
-    .nav-toolbar button.active { border-color: var(--accent); color: var(--accent); background: color-mix(in oklab, var(--accent), transparent 92%); }
+      .layout {
+        max-width: 1380px;
+        margin: 0 auto;
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 270px minmax(0, 1fr) 260px;
+        gap: 18px;
+        padding: 18px;
+      }
 
-    .search-box { padding: 0 16px; margin-bottom: 12px; }
-    .search-box input { width: 100%; padding: 8px 12px; border: 1px solid var(--search-border); border-radius: 8px; background: var(--search-bg); color: var(--fg); font-size: 13px; outline: none; transition: border-color .15s; }
-    .search-box input:focus { border-color: var(--accent); }
-    .search-box input::placeholder { color: var(--meta); }
-    .search-results { display: none; padding: 0 16px; margin-bottom: 8px; font-size: 12px; color: var(--meta); }
-    .search-results.show { display: block; }
+      .panel {
+        background: linear-gradient(180deg, #0f1730, var(--panel));
+        border: 1px solid var(--line);
+        border-radius: 14px;
+      }
 
-    .nav-scroll { flex: 1; overflow-y: auto; }
-    .nav-group { font-size: 11px; font-weight: 600; color: var(--meta); text-transform: uppercase; letter-spacing: .06em; padding: 16px 20px 8px; }
-    .nav-link { display: block; padding: 6px 20px; font-size: 14px; color: var(--muted); text-decoration: none; border-left: 2px solid transparent; transition: color .15s, border-color .15s; }
-    .nav-link:hover { color: var(--fg); }
-    .nav-link.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
-    .nav-link.search-hidden { display: none; }
+      .side {
+        padding: 16px;
+        position: sticky;
+        top: 16px;
+        height: calc(100vh - 32px);
+        overflow: auto;
+      }
 
-    /* ── Article ── */
-    .doc-article { padding: 48px 32px; max-width: 780px; margin: 0 auto; }
-    .doc-article h1 { font-size: 32px; font-weight: 700; line-height: 1.25; letter-spacing: -.02em; margin-bottom: 16px; }
-    .doc-article h2 { font-size: 24px; font-weight: 600; line-height: 1.25; margin-top: 48px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-soft); }
-    .doc-article h3 { font-size: 20px; font-weight: 600; color: var(--fg-2); margin-top: 32px; margin-bottom: 12px; }
-    .doc-article p { color: var(--fg-2); margin-bottom: 16px; }
-    .doc-article ul, .doc-article ol { margin-bottom: 16px; padding-left: 24px; color: var(--fg-2); }
-    .doc-article li { margin-bottom: 8px; }
-    .doc-article a { color: var(--accent); text-decoration: none; }
-    .doc-article a:hover { text-decoration: underline; }
-    .doc-article section.search-hidden { display: none; }
-    .badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 9999px; background: color-mix(in oklab, var(--accent), transparent 88%); color: var(--accent); vertical-align: middle; margin-left: 8px; }
-    code { font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace; font-size: .875em; background: var(--border-soft); padding: 2px 6px; border-radius: 4px; color: var(--fg); }
-    pre { background: var(--code-bg); color: var(--code-fg); border-radius: 8px; padding: 20px; overflow-x: auto; margin-bottom: 24px; font-size: 14px; line-height: 1.55; }
-    pre code { background: none; padding: 0; border-radius: 0; color: inherit; }
-    .kw { color: #c586c0; } .tp { color: #4ec9b0; } .str { color: #ce9178; } .cm { color: #6a9955; } .fn { color: #dcdcaa; } .nr { color: #b5cea8; }
-    .api-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 14px; }
-    .api-table th { text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--meta); padding: 12px 16px; border-bottom: 2px solid var(--border); }
-    .api-table td { padding: 12px 16px; border-bottom: 1px solid var(--border-soft); color: var(--fg-2); vertical-align: top; }
-    .api-table td:first-child { font-weight: 500; color: var(--fg); white-space: nowrap; }
-    .api-table td code { font-size: .85em; }
-    .arch-diagram { background: var(--code-bg); color: var(--code-fg); border-radius: 8px; padding: 24px; margin-bottom: 24px; font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; white-space: pre; }
+      .side h3 {
+        margin: 0 0 14px;
+        font-size: 15px;
+        letter-spacing: .02em;
+      }
 
-    /* ── TOC ── */
-    .doc-toc { position: sticky; top: 0; height: 100vh; overflow-y: auto; border-left: 1px solid var(--border); padding: 48px 20px 24px; background: var(--bg); }
-    .toc-title { font-size: 11px; font-weight: 600; color: var(--meta); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; }
-    .toc-link { display: block; padding: 4px 0; font-size: 14px; color: var(--muted); text-decoration: none; transition: color .15s; }
-    .toc-link:hover { color: var(--fg); }
-    .toc-link.d3 { padding-left: 16px; font-size: 12px; }
+      .side-item {
+        margin: 8px 0;
+      }
 
-    /* ── Responsive ── */
-    @media (max-width: 1023px) {
-      .doc-layout { grid-template-columns: 1fr; }
-      .doc-nav { position: fixed; left: -280px; width: 280px; z-index: 100; transition: left .2s cubic-bezier(.2,0,0,1); box-shadow: 2px 0 12px rgba(0,0,0,.08); }
-      .doc-nav.open { left: 0; }
-      .doc-toc { display: none; }
-      .doc-article { padding: 32px 16px; }
-      .menu-btn { display: flex; }
-    }
-    @media (min-width: 1024px) { .menu-btn { display: none; } .overlay { display: none !important; } }
-    .menu-btn { position: fixed; top: 16px; left: 16px; z-index: 101; width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); cursor: pointer; align-items: center; justify-content: center; color: var(--fg); font-size: 18px; }
-    .overlay { position: fixed; inset: 0; z-index: 99; background: rgba(0,0,0,.3); display: none; }
-    .overlay.show { display: block; }
-  </style>
-</head>
-<body>
+      .side a {
+        display: block;
+        color: #bfd4ef;
+        text-decoration: none;
+        border-left: 2px solid transparent;
+        padding: 8px 10px;
+        border-radius: 7px;
+        font-size: 13px;
+        line-height: 1.4;
+      }
 
-<button class="menu-btn" onclick="toggleNav()" aria-label="Menu">&#9776;</button>
-<div class="overlay" id="ov" onclick="toggleNav()"></div>
+      .side a:hover {
+        background: #ffffff10;
+      }
 
-<div class="doc-layout">
+      .side a.active {
+        border-left-color: var(--link);
+        color: #eaf8ff;
+      }
 
-  <nav class="doc-nav" id="nav">
-    <div class="nav-head"><h2>MusicConnect</h2><span>v0.1.0</span></div>
-    <div class="nav-toolbar">
-      <button onclick="toggleTheme()" id="themeBtn" title="Toggle dark mode">&#9790;</button>
-      <button onclick="toggleLang()" id="langBtn" title="Switch language">EN</button>
+      .main {
+        border-left: 1px solid var(--line);
+        border-right: 1px solid var(--line);
+      }
+
+      article {
+        padding: 26px 32px 40px;
+        min-height: calc(100vh - 44px);
+        max-height: calc(100vh - 44px);
+        overflow: auto;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 34px;
+        line-height: 1.14;
+      }
+
+      p, li {
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      ul { padding-left: 20px; }
+      code, pre {
+        font-family: ui-monospace, Menlo, Consolas, Monaco, monospace;
+      }
+
+      pre {
+        background: #060a13;
+        border: 1px solid #26436e;
+        border-radius: 12px;
+        padding: 14px;
+        overflow: auto;
+      }
+
+      a {
+        color: var(--link);
+        text-underline-offset: 3px;
+      }
+
+      h2 {
+        margin: 28px 0 10px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 8px;
+      }
+
+      h3 {
+        margin: 24px 0 10px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 2px 10px;
+        border: 1px solid #2e4c7f;
+        border-radius: 999px;
+        color: #9dd4ff;
+        font-size: 12px;
+      }
+
+      .kicker {
+        color: #89b4e5;
+        text-transform: uppercase;
+        letter-spacing: .14em;
+        font-size: 11px;
+      }
+
+      .notice {
+        background: #ffffff08;
+        border: 1px solid #2b3b61;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin: 16px 0;
+      }
+
+      .toc {
+        padding: 16px;
+        position: sticky;
+        top: 16px;
+        height: calc(100vh - 32px);
+        overflow: auto;
+      }
+
+      .toc-item {
+        display: block;
+        padding: 6px 0;
+        color: #a9c3e2;
+        font-size: 13px;
+        text-decoration: none;
+      }
+
+      .toc-item.l2 {
+        padding-left: 12px;
+        font-size: 12px;
+        color: #a0bddf;
+      }
+
+      .toc-item.active {
+        color: #f0fbff;
+      }
+
+      .section-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        margin: 12px 0 4px;
+      }
+
+      .card {
+        border: 1px solid #2a3960;
+        border-radius: 12px;
+        padding: 12px;
+        background: #080f24;
+      }
+
+      .card b { color: #d7e7ff; }
+
+      @media (max-width: 1200px) {
+        .layout { grid-template-columns: 270px 1fr; }
+        .toc { display: none; }
+      }
+
+      @media (max-width: 860px) {
+        .layout {
+          grid-template-columns: 1fr;
+          padding: 10px;
+          gap: 10px;
+        }
+        .side, .toc, .main {
+          position: relative;
+          height: auto;
+          max-height: none;
+        }
+        .side { top: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="panel side">
+        <h3>MusicConnect</h3>
+        <p class="kicker">Reference Hub</p>
+        <div class="side-item"><a href="#overview" class="active" data-target="overview">Overview</a></div>
+        <div class="side-item"><a href="#contract" data-target="contract">Connector Contract</a></div>
+        <div class="side-item"><a href="#quick-start" data-target="quick-start">Quick Start</a></div>
+        <div class="side-item"><a href="#official-connectors" data-target="official-connectors">Official Connectors</a></div>
+        <div class="side-item"><a href="#docs-repo" data-target="docs-repo">Docs + Pages</a></div>
+        <div class="side-item"><a href="#release" data-target="release">Release Workflow</a></div>
+        <div class="side-item"><a href="#links" data-target="links">More Links</a></div>
+      </aside>
+
+      <main class="panel main">
+        <article id="article">
+          <p class="kicker">DancingMusic Connector Ecosystem</p>
+          <h1>MusicConnect Reference (Open-Design)</h1>
+          <p>
+            This site is the official documentation and development center for the
+            <strong>DancingMusic/MusicConnect</strong> connector SDK.
+            Independent connector implementation repositories are loaded separately from the host app at runtime.
+            The recommended plugin flow is:
+          </p>
+          <div class="section-grid">
+            <div class="card">
+              <b>Host app</b>
+              <p>Loads connectors by URL, normalizes config schema, and renders player/store flows.</p>
+            </div>
+            <div class="card">
+              <b>Connector repo</b>
+              <p>Implements <code>MusicConnector</code> and publishes <code>dist/index.js</code>.</p>
+            </div>
+            <div class="card">
+              <b>GitHub Pages</b>
+              <p>Publishes API docs and demo pages for preview and onboarding.</p>
+            </div>
+          </div>
+
+          <section id="overview" data-anchor="overview">
+            <h2>Overview</h2>
+            <p>
+              MusicConnect owns only music source contract and base adapters.
+              It does <strong>not</strong> contain player logic or visual rendering.
+              Every official connector follows a single SemVer release process and can be upgraded in the host via pinned CDN URLs.
+            </p>
+          </section>
+
+          <section id="contract" data-anchor="contract">
+            <h2>Connector Contract</h2>
+            <p>Implementations MUST provide these interfaces:</p>
+            <ul>
+              <li><code>meta</code> ({ id / name / version / capabilities / ... })</li>
+              <li><code>search(query, options)</code> for keyword queries</li>
+              <li><code>getTrack(trackId)</code> for track detail</li>
+              <li><code>getStreamUrl(trackId)</code> for playable stream</li>
+              <li><code>getLyrics(trackId)</code> (if available)</li>
+              <li><code>init(config?)</code> for runtime config injection</li>
+            </ul>
+            <p>
+              Any runtime-specific behavior (DOM manipulation, canvas draw, queue mutation) must stay in host or plugin layers.
+            </p>
+          </section>
+
+          <section id="quick-start" data-anchor="quick-start">
+            <h2>Quick Start</h2>
+            <div class="notice">
+              <span class="chip">Note</span>
+              <span>Local build and contract tests should pass before any release.</span>
+            </div>
+            <pre><code>import { MusicStoreClient } from "@dancingmusic/music-store";
+import { NeteaseConnector } from "@dancingmusic/music-connect/netease";
+
+const connector = new NeteaseConnector();
+await connector.init({ apiBaseUrl: "https://netease-cloud-music-api.vercel.app" });
+
+const client = new MusicStoreClient();
+await client.connectors.register(connector);
+const active = client.connectors.active?.meta;</code></pre>
+            <pre><code>// publishable dist for host loading
+https://cdn.jsdelivr.net/gh/DancingMusic/MusicConnect-NetEase@v0.3.0/dist/index.js</code></pre>
+          </section>
+
+          <section id="official-connectors" data-anchor="official-connectors">
+            <h2>Official Connector Index</h2>
+            <ul>
+              <li><a href="https://github.com/DancingMusic/MusicConnect-NetEase">MusicConnect-NetEase</a> — Demo: <a href="https://dancingmusic.github.io/MusicConnect-NetEase/">MusicConnect-NetEase</a></li>
+              <li><a href="https://github.com/DancingMusic/MusicConnect-iTunes">MusicConnect-iTunes</a> — Demo: <a href="https://dancingmusic.github.io/MusicConnect-iTunes/">MusicConnect-iTunes</a></li>
+              <li><a href="https://github.com/DancingMusic/MusicConnect-Archive">MusicConnect-Archive</a> — Demo: <a href="https://dancingmusic.github.io/MusicConnect-Archive/">MusicConnect-Archive</a></li>
+              <li><a href="https://github.com/DancingMusic/MusicConnect-Radio">MusicConnect-Radio</a> — Demo: <a href="https://dancingmusic.github.io/MusicConnect-Radio/">MusicConnect-Radio</a></li>
+              <li><a href="https://github.com/DancingMusic/MusicConnect-QQMusic">MusicConnect-QQMusic</a> — Demo: <a href="https://dancingmusic.github.io/MusicConnect-QQMusic/">MusicConnect-QQMusic</a></li>
+              <li><a href="https://github.com/DancingMusic/MusicConnect-Spotify">MusicConnect-Spotify</a> — Demo: <a href="https://dancingmusic.github.io/MusicConnect-Spotify/">MusicConnect-Spotify</a></li>
+            </ul>
+          </section>
+
+          <section id="docs-repo" data-anchor="docs-repo">
+            <h2>Docs + GitHub Pages</h2>
+            <p>For any connector repo, follow the same page pattern:
+              <strong>left nav</strong> + <strong>scrollable article</strong> + <strong>inline end TOC</strong>.
+              This repo also publishes docs here to provide a central entry for the connector specification.
+            </p>
+            <ol>
+              <li>Drop your final docs into <code>docs/index.html</code>.</li>
+              <li>Keep the article readable in direct GitHub Pages rendering.</li>
+              <li>Keep links to demo, config and API sections stable for host UI onboarding.</li>
+            </ol>
+          </section>
+
+          <section id="release" data-anchor="release">
+            <h2>Release Workflow</h2>
+            <p>Release process is tag-driven from connector repos:</p>
+            <ul>
+              <li>Update version in <code>package.json</code></li>
+              <li>Run typecheck/build/test</li>
+              <li>Commit and push to <code>main</code></li>
+              <li>Create release tag (vX.Y.Z) and GitHub Release</li>
+              <li>Host uses pinned tag URLs, never floating <code>@main</code></li>
+            </ul>
+          </section>
+
+          <section id="links" data-anchor="links">
+            <h2>More Links</h2>
+            <ul>
+              <li><a href="https://github.com/DancingMusic/MusicConnect">MusicConnect repo</a></li>
+              <li><a href="https://github.com/DancingMusic">DancingMusic org</a></li>
+            </ul>
+          </section>
+        </article>
+      </main>
+
+      <aside class="panel toc">
+        <div class="side-item"><a href="#overview" class="toc-item active" data-target="overview">1. Overview</a></div>
+        <div class="side-item"><a href="#contract" class="toc-item" data-target="contract">2. Connector Contract</a></div>
+        <div class="side-item"><a href="#quick-start" class="toc-item" data-target="quick-start">3. Quick Start</a></div>
+        <div class="side-item"><a href="#official-connectors" class="toc-item" data-target="official-connectors">4. Official Connectors</a></div>
+        <div class="side-item"><a href="#docs-repo" class="toc-item" data-target="docs-repo">5. Docs + Pages</a></div>
+        <div class="side-item"><a href="#release" class="toc-item" data-target="release">6. Release</a></div>
+        <div class="side-item"><a href="#links" class="toc-item" data-target="links">7. More Links</a></div>
+      </aside>
     </div>
-    <div class="search-box"><input type="text" id="searchInput" placeholder="Search docs..." data-i18n-placeholder="search_placeholder" /></div>
-    <div class="search-results" id="searchResults"></div>
-    <div class="nav-scroll">
-      <div class="nav-group" data-i18n="nav_guide">Guide</div>
-      <a class="nav-link active" href="#overview" data-section="overview" data-i18n="nav_overview">Overview</a>
-      <a class="nav-link" href="#quick-start" data-section="quick-start" data-i18n="nav_quick_start">Quick Start</a>
-      <div class="nav-group" data-i18n="nav_api">API Reference</div>
-      <a class="nav-link" href="#music-connector" data-section="music-connector" data-i18n="nav_music_connector">MusicConnector Interface</a>
-      <a class="nav-link" href="#music-connector-meta" data-section="music-connector-meta">MusicConnectorMeta</a>
-      <a class="nav-link" href="#music-search-result" data-section="music-search-result">MusicSearchResult</a>
-      <a class="nav-link" href="#music-stream-info" data-section="music-stream-info">MusicStreamInfo</a>
-      <a class="nav-link" href="#music-lyrics" data-section="music-lyrics">MusicLyrics</a>
-      <div class="nav-group" data-i18n="nav_connectors">Connectors</div>
-      <a class="nav-link" href="#netease-connector" data-section="netease-connector" data-i18n="nav_netease_connector">NeteaseConnector</a>
-      <div class="nav-group" data-i18n="nav_advanced">Advanced</div>
-      <a class="nav-link" href="#creating-a-connector" data-section="creating-a-connector" data-i18n="nav_creating_connector">Creating a Connector</a>
-      <a class="nav-link" href="#connector-id-convention" data-section="connector-id-convention" data-i18n="nav_id_convention">Connector ID Convention</a>
-      <div class="nav-group" data-i18n="nav_links">Links</div>
-      <a class="nav-link" href="https://github.com/DancingMusic/MusicConnect" target="_blank">GitHub &#8599;</a>
-      <a class="nav-link" href="https://dancingmusic.github.io" target="_blank">DancingMusic &#8599;</a>
-    </div>
-  </nav>
 
-  <main class="doc-article" id="article">
+    <script>
+      const article = document.getElementById('article');
+      const anchors = Array.from(document.querySelectorAll('[data-target]'));
+      const sections = anchors
+        .map((a) => document.getElementById(a.getAttribute('data-target')))
+        .filter(Boolean);
 
-    <section id="overview" data-search-keywords="overview introduction architecture music connect connector registry data source plugin">
-      <h1 data-i18n="h_overview">Overview</h1>
-      <p data-i18n="p_overview_intro">MusicConnect is a music data source connector library for DancingMusic. It provides a unified interface for connecting to multiple music platforms, allowing you to search tracks, retrieve metadata, stream audio, and fetch lyrics from any supported source through a single, consistent API.</p>
-      <h3 data-i18n="h_architecture">Architecture</h3>
-      <p data-i18n="p_architecture_desc">MusicConnect sits between MusicStoreSdk and the individual platform connectors, managed through a central registry:</p>
-      <div class="arch-diagram">
-┌─────────────────┐
-│  MusicStoreSdk  │      Application layer
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────────────────┐
-│  MusicConnectorRegistry     │  Manages connector lifecycle
-│  ┌────────────────────────┐ │
-│  │  register(connector)   │ │
-│  │  get(id)               │ │
-│  │  list()                │ │
-│  └────────────────────────┘ │
-└────────┬────────────────────┘
-         │
-    ┌────┴─────┬──────────────┐
-    ▼          ▼              ▼
-┌────────┐ ┌────────┐ ┌────────────┐
-│ Netease│ │ Custom │ │  Custom    │
-│Connector│ │Conn. A │ │  Conn. B   │
-└────────┘ └────────┘ └────────────┘
-    │          │              │
-    ▼          ▼              ▼
-  NetEase    Platform A    Platform B
-  Cloud API   API           API
-      </div>
-      <p data-i18n="p_overview_features">Key features:</p>
-      <ul>
-        <li data-i18n="li_feature_unified">Unified connector interface for all music platforms</li>
-        <li data-i18n="li_feature_registry">Central registry for managing multiple connectors</li>
-        <li data-i18n="li_feature_search">Cross-platform search, streaming, and lyrics retrieval</li>
-        <li data-i18n="li_feature_extensible">Extensible architecture for adding custom connectors</li>
-        <li data-i18n="li_feature_netease">Built-in NetEase Cloud Music connector</li>
-      </ul>
-    </section>
+      const onScroll = () => {
+        if (!article) return;
+        const y = article.scrollTop + 20;
+        let active = anchors[0]?.getAttribute('data-target');
+        for (const sec of sections) {
+          if (sec.offsetTop <= y) {
+            active = sec.id;
+          }
+        }
+        anchors.forEach((a) => {
+          const id = a.getAttribute('data-target');
+          a.classList.toggle('active', id === active);
+        });
+      };
+      article?.addEventListener('scroll', onScroll);
+      onScroll();
 
-    <section id="quick-start" data-search-keywords="quick start install setup usage npm register connector search stream">
-      <h2 data-i18n="h_quick_start">Quick Start</h2>
-      <h3 data-i18n="h_install">Install</h3>
-<pre><code><span class="fn">npm</span> install @dancingmusic/music-connect</code></pre>
-      <h3 data-i18n="h_usage">Usage</h3>
-<pre><code><span class="kw">import</span> {
-  <span class="tp">MusicConnectorRegistry</span>,
-  <span class="tp">NeteaseConnector</span>,
-} <span class="kw">from</span> <span class="str">'@dancingmusic/music-connect'</span>;
-
-<span class="cm">// Create the registry and register a connector</span>
-<span class="kw">const</span> registry = <span class="kw">new</span> <span class="tp">MusicConnectorRegistry</span>();
-<span class="kw">const</span> netease = <span class="kw">new</span> <span class="tp">NeteaseConnector</span>({
-  apiBase: <span class="str">'https://netease-api.example.com'</span>,
-});
-registry.<span class="fn">register</span>(netease);
-
-<span class="cm">// Search for tracks</span>
-<span class="kw">const</span> connector = registry.<span class="fn">get</span>(<span class="str">'netease'</span>);
-<span class="kw">const</span> results = <span class="kw">await</span> connector.<span class="fn">search</span>(<span class="str">'Jay Chou'</span>, { limit: <span class="nr">10</span> });
-
-<span class="cm">// Get stream URL for the first result</span>
-<span class="kw">const</span> stream = <span class="kw">await</span> connector.<span class="fn">getStreamUrl</span>(results[<span class="nr">0</span>].trackId);
-console.<span class="fn">log</span>(stream.url, stream.format, stream.bitrate);
-
-<span class="cm">// Fetch lyrics</span>
-<span class="kw">const</span> lyrics = <span class="kw">await</span> connector.<span class="fn">getLyrics</span>(results[<span class="nr">0</span>].trackId);
-lyrics.lines.<span class="fn">forEach</span>(line =&gt;
-  console.<span class="fn">log</span>(<span class="str">`[</span>${line.time}<span class="str">]`</span>, line.text)
-);</code></pre>
-    </section>
-
-    <section id="music-connector" data-search-keywords="MusicConnector interface meta search getTrack getStreamUrl getLyrics connector plugin">
-      <h2 data-i18n="h_music_connector">MusicConnector Interface</h2>
-      <p data-i18n="p_music_connector">All connectors must implement the <code>MusicConnector</code> interface. This is the contract that the registry and consuming code rely on.</p>
-<pre><code><span class="kw">interface</span> <span class="tp">MusicConnector</span> {
-  <span class="cm">/** Connector metadata */</span>
-  <span class="kw">readonly</span> meta: <span class="tp">MusicConnectorMeta</span>;
-
-  <span class="cm">/** Search for tracks by keyword */</span>
-  <span class="fn">search</span>(
-    keyword: <span class="tp">string</span>,
-    options?: { limit?: <span class="tp">number</span>; offset?: <span class="tp">number</span> }
-  ): <span class="tp">Promise</span>&lt;<span class="tp">MusicSearchResult</span>[]&gt;;
-
-  <span class="cm">/** Get track details by trackId */</span>
-  <span class="fn">getTrack</span>(trackId: <span class="tp">string</span>): <span class="tp">Promise</span>&lt;<span class="tp">MusicSearchResult</span> | <span class="kw">null</span>&gt;;
-
-  <span class="cm">/** Get a streamable URL for the track */</span>
-  <span class="fn">getStreamUrl</span>(trackId: <span class="tp">string</span>): <span class="tp">Promise</span>&lt;<span class="tp">MusicStreamInfo</span>&gt;;
-
-  <span class="cm">/** Get lyrics for the track */</span>
-  <span class="fn">getLyrics</span>(trackId: <span class="tp">string</span>): <span class="tp">Promise</span>&lt;<span class="tp">MusicLyrics</span> | <span class="kw">null</span>&gt;;
-}</code></pre>
-      <table class="api-table"><thead><tr><th data-i18n="th_method">Method</th><th data-i18n="th_signature">Signature</th><th data-i18n="th_desc">Description</th></tr></thead><tbody>
-        <tr><td><code>meta</code></td><td><code>MusicConnectorMeta</code></td><td data-i18n="td_mc_meta">Read-only connector metadata describing the platform</td></tr>
-        <tr><td><code>search</code></td><td><code>(keyword, options?) =&gt; Promise&lt;MusicSearchResult[]&gt;</code></td><td data-i18n="td_mc_search">Search for tracks by keyword with optional pagination</td></tr>
-        <tr><td><code>getTrack</code></td><td><code>(trackId) =&gt; Promise&lt;MusicSearchResult | null&gt;</code></td><td data-i18n="td_mc_gettrack">Get detailed track information by ID</td></tr>
-        <tr><td><code>getStreamUrl</code></td><td><code>(trackId) =&gt; Promise&lt;MusicStreamInfo&gt;</code></td><td data-i18n="td_mc_getstreamurl">Get a streamable URL and format info for the track</td></tr>
-        <tr><td><code>getLyrics</code></td><td><code>(trackId) =&gt; Promise&lt;MusicLyrics | null&gt;</code></td><td data-i18n="td_mc_getlyrics">Get time-synced lyrics; returns null if unavailable</td></tr>
-      </tbody></table>
-    </section>
-
-    <section id="music-connector-meta" data-search-keywords="MusicConnectorMeta id name icon description version capabilities metadata">
-      <h2>MusicConnectorMeta</h2>
-      <p data-i18n="p_connector_meta">Metadata that describes a connector and its capabilities. Each connector exposes this via the <code>meta</code> property.</p>
-<pre><code><span class="kw">interface</span> <span class="tp">MusicConnectorMeta</span> {
-  id: <span class="tp">string</span>;
-  name: <span class="tp">string</span>;
-  icon: <span class="tp">string</span>;
-  description: <span class="tp">string</span>;
-  version: <span class="tp">string</span>;
-  capabilities: <span class="tp">string</span>[];
-}</code></pre>
-      <table class="api-table"><thead><tr><th data-i18n="th_field">Field</th><th data-i18n="th_type">Type</th><th data-i18n="th_desc">Description</th></tr></thead><tbody>
-        <tr><td><code>id</code></td><td><code>string</code></td><td data-i18n="td_meta_id">Unique connector identifier (e.g. <code>"netease"</code>)</td></tr>
-        <tr><td><code>name</code></td><td><code>string</code></td><td data-i18n="td_meta_name">Human-readable display name</td></tr>
-        <tr><td><code>icon</code></td><td><code>string</code></td><td data-i18n="td_meta_icon">Icon URL or emoji for UI display</td></tr>
-        <tr><td><code>description</code></td><td><code>string</code></td><td data-i18n="td_meta_description">Brief description of the connector</td></tr>
-        <tr><td><code>version</code></td><td><code>string</code></td><td data-i18n="td_meta_version">Connector version (semver)</td></tr>
-        <tr><td><code>capabilities</code></td><td><code>string[]</code></td><td data-i18n="td_meta_capabilities">List of supported capabilities (e.g. <code>["search", "stream", "lyrics"]</code>)</td></tr>
-      </tbody></table>
-    </section>
-
-    <section id="music-search-result" data-search-keywords="MusicSearchResult trackId title artist album duration coverUrl platform search result">
-      <h2>MusicSearchResult</h2>
-      <p data-i18n="p_search_result">Represents a single track returned from a search or lookup.</p>
-<pre><code><span class="kw">interface</span> <span class="tp">MusicSearchResult</span> {
-  trackId: <span class="tp">string</span>;
-  title: <span class="tp">string</span>;
-  artist: <span class="tp">string</span>;
-  album?: <span class="tp">string</span>;
-  duration: <span class="tp">number</span>;
-  coverUrl?: <span class="tp">string</span>;
-  platform: <span class="tp">string</span>;
-}</code></pre>
-      <table class="api-table"><thead><tr><th data-i18n="th_field">Field</th><th data-i18n="th_type">Type</th><th data-i18n="th_desc">Description</th></tr></thead><tbody>
-        <tr><td><code>trackId</code></td><td><code>string</code></td><td data-i18n="td_sr_trackid">Unique track ID in <code>platform:id</code> format</td></tr>
-        <tr><td><code>title</code></td><td><code>string</code></td><td data-i18n="td_sr_title">Track title</td></tr>
-        <tr><td><code>artist</code></td><td><code>string</code></td><td data-i18n="td_sr_artist">Artist name</td></tr>
-        <tr><td><code>album</code></td><td><code>string</code></td><td><span data-i18n="td_sr_album">Album name</span> <span class="badge">optional</span></td></tr>
-        <tr><td><code>duration</code></td><td><code>number</code></td><td data-i18n="td_sr_duration">Track duration in seconds</td></tr>
-        <tr><td><code>coverUrl</code></td><td><code>string</code></td><td><span data-i18n="td_sr_coverurl">Album cover image URL</span> <span class="badge">optional</span></td></tr>
-        <tr><td><code>platform</code></td><td><code>string</code></td><td data-i18n="td_sr_platform">Source platform identifier (e.g. <code>"netease"</code>)</td></tr>
-      </tbody></table>
-    </section>
-
-    <section id="music-stream-info" data-search-keywords="MusicStreamInfo url format bitrate expiresAt stream audio playback">
-      <h2>MusicStreamInfo</h2>
-      <p data-i18n="p_stream_info">Contains the streaming URL and audio format details for a track.</p>
-<pre><code><span class="kw">interface</span> <span class="tp">MusicStreamInfo</span> {
-  url: <span class="tp">string</span>;
-  format: <span class="tp">string</span>;
-  bitrate: <span class="tp">number</span>;
-  expiresAt?: <span class="tp">number</span>;
-}</code></pre>
-      <table class="api-table"><thead><tr><th data-i18n="th_field">Field</th><th data-i18n="th_type">Type</th><th data-i18n="th_desc">Description</th></tr></thead><tbody>
-        <tr><td><code>url</code></td><td><code>string</code></td><td data-i18n="td_si_url">Streamable audio URL</td></tr>
-        <tr><td><code>format</code></td><td><code>string</code></td><td data-i18n="td_si_format">Audio format (e.g. <code>"mp3"</code>, <code>"flac"</code>, <code>"aac"</code>)</td></tr>
-        <tr><td><code>bitrate</code></td><td><code>number</code></td><td data-i18n="td_si_bitrate">Audio bitrate in kbps</td></tr>
-        <tr><td><code>expiresAt</code></td><td><code>number</code></td><td><span data-i18n="td_si_expiresat">URL expiration timestamp (Unix ms)</span> <span class="badge">optional</span></td></tr>
-      </tbody></table>
-    </section>
-
-    <section id="music-lyrics" data-search-keywords="MusicLyrics LyricLine trackId lines time text translation lyrics synced timed">
-      <h2>MusicLyrics</h2>
-      <p data-i18n="p_lyrics">Represents time-synced lyrics for a track. Each line has a timestamp and text content.</p>
-<pre><code><span class="kw">interface</span> <span class="tp">LyricLine</span> {
-  time: <span class="tp">number</span>;
-  text: <span class="tp">string</span>;
-  translation?: <span class="tp">string</span>;
-}
-
-<span class="kw">interface</span> <span class="tp">MusicLyrics</span> {
-  trackId: <span class="tp">string</span>;
-  lines: <span class="tp">LyricLine</span>[];
-}</code></pre>
-      <h3>LyricLine</h3>
-      <table class="api-table"><thead><tr><th data-i18n="th_field">Field</th><th data-i18n="th_type">Type</th><th data-i18n="th_desc">Description</th></tr></thead><tbody>
-        <tr><td><code>time</code></td><td><code>number</code></td><td data-i18n="td_ll_time">Timestamp in seconds from track start</td></tr>
-        <tr><td><code>text</code></td><td><code>string</code></td><td data-i18n="td_ll_text">Lyric text content</td></tr>
-        <tr><td><code>translation</code></td><td><code>string</code></td><td><span data-i18n="td_ll_translation">Translated lyric text</span> <span class="badge">optional</span></td></tr>
-      </tbody></table>
-      <h3>MusicLyrics</h3>
-      <table class="api-table"><thead><tr><th data-i18n="th_field">Field</th><th data-i18n="th_type">Type</th><th data-i18n="th_desc">Description</th></tr></thead><tbody>
-        <tr><td><code>trackId</code></td><td><code>string</code></td><td data-i18n="td_ml_trackid">Track ID this lyrics belongs to</td></tr>
-        <tr><td><code>lines</code></td><td><code>LyricLine[]</code></td><td data-i18n="td_ml_lines">Array of time-synced lyric lines</td></tr>
-      </tbody></table>
-    </section>
-
-    <section id="netease-connector" data-search-keywords="NeteaseConnector netease cloud music connector built-in config apiBase cookie capabilities">
-      <h2 data-i18n="h_netease_connector">NeteaseConnector</h2>
-      <p data-i18n="p_netease_intro">The built-in connector for NetEase Cloud Music. It provides access to search, streaming, and lyrics from the NetEase platform.</p>
-      <h3 data-i18n="h_netease_capabilities">Capabilities</h3>
-      <ul>
-        <li><code>search</code> &mdash; <span data-i18n="td_nc_cap_search">Search tracks by keyword</span></li>
-        <li><code>stream</code> &mdash; <span data-i18n="td_nc_cap_stream">Get streamable audio URLs</span></li>
-        <li><code>lyrics</code> &mdash; <span data-i18n="td_nc_cap_lyrics">Fetch time-synced lyrics with translations</span></li>
-      </ul>
-      <h3 data-i18n="h_netease_config">Configuration</h3>
-      <table class="api-table"><thead><tr><th data-i18n="th_option">Option</th><th data-i18n="th_type">Type</th><th data-i18n="th_desc">Description</th></tr></thead><tbody>
-        <tr><td><code>apiBase</code></td><td><code>string</code></td><td data-i18n="td_nc_apibase">Base URL for the NetEase API proxy</td></tr>
-        <tr><td><code>cookie</code></td><td><code>string</code></td><td><span data-i18n="td_nc_cookie">NetEase login cookie for authenticated access (higher quality streams)</span> <span class="badge">optional</span></td></tr>
-        <tr><td><code>timeoutMs</code></td><td><code>number</code></td><td><span data-i18n="td_nc_timeout">Request timeout in milliseconds (default: 10000)</span> <span class="badge">optional</span></td></tr>
-        <tr><td><code>quality</code></td><td><code>'standard' | 'higher' | 'exhigh' | 'lossless'</code></td><td><span data-i18n="td_nc_quality">Preferred audio quality level (default: <code>"higher"</code>)</span> <span class="badge">optional</span></td></tr>
-      </tbody></table>
-      <h3 data-i18n="h_netease_example">Example</h3>
-<pre><code><span class="kw">import</span> { <span class="tp">NeteaseConnector</span> } <span class="kw">from</span> <span class="str">'@dancingmusic/music-connect'</span>;
-
-<span class="kw">const</span> netease = <span class="kw">new</span> <span class="tp">NeteaseConnector</span>({
-  apiBase: <span class="str">'https://netease-api.example.com'</span>,
-  cookie: <span class="str">'MUSIC_U=your_cookie_here'</span>,
-  quality: <span class="str">'lossless'</span>,
-});
-
-console.<span class="fn">log</span>(netease.meta);
-<span class="cm">// {</span>
-<span class="cm">//   id: 'netease',</span>
-<span class="cm">//   name: 'NetEase Cloud Music',</span>
-<span class="cm">//   icon: 'https://music.163.com/favicon.ico',</span>
-<span class="cm">//   description: 'NetEase Cloud Music connector',</span>
-<span class="cm">//   version: '0.1.0',</span>
-<span class="cm">//   capabilities: ['search', 'stream', 'lyrics']</span>
-<span class="cm">// }</span>
-
-<span class="kw">const</span> results = <span class="kw">await</span> netease.<span class="fn">search</span>(<span class="str">'Mayday'</span>);
-<span class="kw">const</span> stream = <span class="kw">await</span> netease.<span class="fn">getStreamUrl</span>(results[<span class="nr">0</span>].trackId);
-<span class="kw">const</span> lyrics = <span class="kw">await</span> netease.<span class="fn">getLyrics</span>(results[<span class="nr">0</span>].trackId);</code></pre>
-    </section>
-
-    <section id="creating-a-connector" data-search-keywords="creating custom connector plugin implement MusicConnector register tutorial guide step by step">
-      <h2 data-i18n="h_creating_connector">Creating a Connector</h2>
-      <p data-i18n="p_creating_intro">You can extend MusicConnect by implementing the <code>MusicConnector</code> interface. Follow these steps to create a custom connector for any music platform.</p>
-
-      <h3 data-i18n="h_step1">Step 1: Define the connector class</h3>
-<pre><code><span class="kw">import</span> <span class="kw">type</span> {
-  <span class="tp">MusicConnector</span>,
-  <span class="tp">MusicConnectorMeta</span>,
-  <span class="tp">MusicSearchResult</span>,
-  <span class="tp">MusicStreamInfo</span>,
-  <span class="tp">MusicLyrics</span>,
-} <span class="kw">from</span> <span class="str">'@dancingmusic/music-connect'</span>;
-
-<span class="kw">export class</span> <span class="tp">SpotifyConnector</span> <span class="kw">implements</span> <span class="tp">MusicConnector</span> {
-  <span class="kw">readonly</span> meta: <span class="tp">MusicConnectorMeta</span> = {
-    id: <span class="str">'spotify'</span>,
-    name: <span class="str">'Spotify'</span>,
-    icon: <span class="str">'https://spotify.com/favicon.ico'</span>,
-    description: <span class="str">'Spotify music connector'</span>,
-    version: <span class="str">'0.1.0'</span>,
-    capabilities: [<span class="str">'search'</span>, <span class="str">'stream'</span>],
-  };
-
-  <span class="kw">constructor</span>(<span class="kw">private</span> config: { clientId: <span class="tp">string</span>; clientSecret: <span class="tp">string</span> }) {}
-
-  <span class="kw">async</span> <span class="fn">search</span>(keyword: <span class="tp">string</span>, options?: { limit?: <span class="tp">number</span>; offset?: <span class="tp">number</span> }) {
-    <span class="cm">// Call Spotify API and map results to MusicSearchResult[]</span>
-    <span class="kw">return</span> [];
-  }
-
-  <span class="kw">async</span> <span class="fn">getTrack</span>(trackId: <span class="tp">string</span>) {
-    <span class="cm">// Fetch a single track by its platform:id</span>
-    <span class="kw">return</span> <span class="kw">null</span>;
-  }
-
-  <span class="kw">async</span> <span class="fn">getStreamUrl</span>(trackId: <span class="tp">string</span>) {
-    <span class="cm">// Return stream info</span>
-    <span class="kw">return</span> { url: <span class="str">''</span>, format: <span class="str">'ogg'</span>, bitrate: <span class="nr">320</span> };
-  }
-
-  <span class="kw">async</span> <span class="fn">getLyrics</span>(trackId: <span class="tp">string</span>) {
-    <span class="cm">// Not supported — return null</span>
-    <span class="kw">return</span> <span class="kw">null</span>;
-  }
-}</code></pre>
-
-      <h3 data-i18n="h_step2">Step 2: Register the connector</h3>
-<pre><code><span class="kw">import</span> { <span class="tp">MusicConnectorRegistry</span> } <span class="kw">from</span> <span class="str">'@dancingmusic/music-connect'</span>;
-<span class="kw">import</span> { <span class="tp">SpotifyConnector</span> } <span class="kw">from</span> <span class="str">'./spotify-connector'</span>;
-
-<span class="kw">const</span> registry = <span class="kw">new</span> <span class="tp">MusicConnectorRegistry</span>();
-
-registry.<span class="fn">register</span>(<span class="kw">new</span> <span class="tp">SpotifyConnector</span>({
-  clientId: <span class="str">'your-client-id'</span>,
-  clientSecret: <span class="str">'your-client-secret'</span>,
-}));
-
-<span class="cm">// Now you can use it</span>
-<span class="kw">const</span> spotify = registry.<span class="fn">get</span>(<span class="str">'spotify'</span>);
-<span class="kw">const</span> results = <span class="kw">await</span> spotify.<span class="fn">search</span>(<span class="str">'Daft Punk'</span>);</code></pre>
-
-      <h3 data-i18n="h_step3">Step 3: Handle capabilities</h3>
-      <p data-i18n="p_step3">If your connector does not support a capability (e.g. lyrics), declare only the supported ones in <code>meta.capabilities</code> and return <code>null</code> from the unsupported method. Consumers should check capabilities before calling:</p>
-<pre><code><span class="kw">const</span> connector = registry.<span class="fn">get</span>(<span class="str">'spotify'</span>);
-
-<span class="kw">if</span> (connector.meta.capabilities.<span class="fn">includes</span>(<span class="str">'lyrics'</span>)) {
-  <span class="kw">const</span> lyrics = <span class="kw">await</span> connector.<span class="fn">getLyrics</span>(trackId);
-} <span class="kw">else</span> {
-  console.<span class="fn">log</span>(<span class="str">'Lyrics not supported by this connector'</span>);
-}</code></pre>
-    </section>
-
-    <section id="connector-id-convention" data-search-keywords="connector ID convention trackId platform id format naming collision cross-platform">
-      <h2 data-i18n="h_id_convention">Connector ID Convention</h2>
-      <p data-i18n="p_id_convention_intro">To avoid ID collisions across different music platforms, all <code>trackId</code> values must follow the <code>platform:id</code> format.</p>
-      <h3 data-i18n="h_id_format">Format</h3>
-<pre><code><span class="cm">// Pattern: &lt;platform&gt;:&lt;platform_specific_id&gt;</span>
-
-<span class="str">"netease:1234567"</span>     <span class="cm">// NetEase Cloud Music track</span>
-<span class="str">"spotify:4uLU6hMCjMI75M1A2tKUQC"</span>  <span class="cm">// Spotify track</span>
-<span class="str">"qq:003aAYrk3GE"</span>     <span class="cm">// QQ Music track</span></code></pre>
-      <h3 data-i18n="h_id_rules">Rules</h3>
-      <ul>
-        <li data-i18n="li_id_rule1">The <code>platform</code> segment must match the connector's <code>meta.id</code></li>
-        <li data-i18n="li_id_rule2">The <code>id</code> segment is the platform's native track identifier</li>
-        <li data-i18n="li_id_rule3">Connectors must generate <code>trackId</code> in this format when returning search results</li>
-        <li data-i18n="li_id_rule4">Connectors must parse and strip the prefix when making platform API calls</li>
-      </ul>
-      <h3 data-i18n="h_id_parsing">Parsing example</h3>
-<pre><code><span class="cm">// Utility to parse a trackId</span>
-<span class="kw">function</span> <span class="fn">parseTrackId</span>(trackId: <span class="tp">string</span>): { platform: <span class="tp">string</span>; id: <span class="tp">string</span> } {
-  <span class="kw">const</span> idx = trackId.<span class="fn">indexOf</span>(<span class="str">':'</span>);
-  <span class="kw">if</span> (idx === -<span class="nr">1</span>) <span class="kw">throw new</span> <span class="tp">Error</span>(<span class="str">`Invalid trackId format: ${trackId}`</span>);
-  <span class="kw">return</span> {
-    platform: trackId.<span class="fn">slice</span>(<span class="nr">0</span>, idx),
-    id: trackId.<span class="fn">slice</span>(idx + <span class="nr">1</span>),
-  };
-}
-
-<span class="kw">const</span> { platform, id } = <span class="fn">parseTrackId</span>(<span class="str">'netease:1234567'</span>);
-<span class="cm">// platform === 'netease', id === '1234567'</span></code></pre>
-    </section>
-
-  </main>
-
-  <aside class="doc-toc">
-    <div class="toc-title" data-i18n="toc_title">On this page</div>
-    <a class="toc-link" href="#overview" data-i18n="nav_overview">Overview</a>
-    <a class="toc-link d3" href="#overview" data-i18n="h_architecture">Architecture</a>
-    <a class="toc-link" href="#quick-start" data-i18n="nav_quick_start">Quick Start</a>
-    <a class="toc-link" href="#music-connector" data-i18n="nav_music_connector">MusicConnector Interface</a>
-    <a class="toc-link" href="#music-connector-meta">MusicConnectorMeta</a>
-    <a class="toc-link" href="#music-search-result">MusicSearchResult</a>
-    <a class="toc-link" href="#music-stream-info">MusicStreamInfo</a>
-    <a class="toc-link" href="#music-lyrics">MusicLyrics</a>
-    <a class="toc-link" href="#netease-connector" data-i18n="nav_netease_connector">NeteaseConnector</a>
-    <a class="toc-link" href="#creating-a-connector" data-i18n="nav_creating_connector">Creating a Connector</a>
-    <a class="toc-link" href="#connector-id-convention" data-i18n="nav_id_convention">Connector ID Convention</a>
-  </aside>
-
-</div>
-
-<script>
-const i18n = {
-  en: {
-    search_placeholder: 'Search docs...',
-    nav_guide: 'Guide', nav_api: 'API Reference', nav_connectors: 'Connectors', nav_advanced: 'Advanced', nav_links: 'Links',
-    nav_overview: 'Overview', nav_quick_start: 'Quick Start',
-    nav_music_connector: 'MusicConnector Interface',
-    nav_netease_connector: 'NeteaseConnector',
-    nav_creating_connector: 'Creating a Connector',
-    nav_id_convention: 'Connector ID Convention',
-    toc_title: 'On this page',
-    h_overview: 'Overview',
-    p_overview_intro: 'MusicConnect is a music data source connector library for DancingMusic. It provides a unified interface for connecting to multiple music platforms, allowing you to search tracks, retrieve metadata, stream audio, and fetch lyrics from any supported source through a single, consistent API.',
-    h_architecture: 'Architecture',
-    p_architecture_desc: 'MusicConnect sits between MusicStoreSdk and the individual platform connectors, managed through a central registry:',
-    p_overview_features: 'Key features:',
-    li_feature_unified: 'Unified connector interface for all music platforms',
-    li_feature_registry: 'Central registry for managing multiple connectors',
-    li_feature_search: 'Cross-platform search, streaming, and lyrics retrieval',
-    li_feature_extensible: 'Extensible architecture for adding custom connectors',
-    li_feature_netease: 'Built-in NetEase Cloud Music connector',
-    h_quick_start: 'Quick Start', h_install: 'Install', h_usage: 'Usage',
-    h_music_connector: 'MusicConnector Interface',
-    p_music_connector: 'All connectors must implement the <code>MusicConnector</code> interface. This is the contract that the registry and consuming code rely on.',
-    th_method: 'Method', th_signature: 'Signature', th_desc: 'Description', th_type: 'Type', th_field: 'Field', th_option: 'Option',
-    td_mc_meta: 'Read-only connector metadata describing the platform',
-    td_mc_search: 'Search for tracks by keyword with optional pagination',
-    td_mc_gettrack: 'Get detailed track information by ID',
-    td_mc_getstreamurl: 'Get a streamable URL and format info for the track',
-    td_mc_getlyrics: 'Get time-synced lyrics; returns null if unavailable',
-    p_connector_meta: 'Metadata that describes a connector and its capabilities. Each connector exposes this via the <code>meta</code> property.',
-    td_meta_id: 'Unique connector identifier (e.g. <code>"netease"</code>)',
-    td_meta_name: 'Human-readable display name',
-    td_meta_icon: 'Icon URL or emoji for UI display',
-    td_meta_description: 'Brief description of the connector',
-    td_meta_version: 'Connector version (semver)',
-    td_meta_capabilities: 'List of supported capabilities (e.g. <code>["search", "stream", "lyrics"]</code>)',
-    p_search_result: 'Represents a single track returned from a search or lookup.',
-    td_sr_trackid: 'Unique track ID in <code>platform:id</code> format',
-    td_sr_title: 'Track title',
-    td_sr_artist: 'Artist name',
-    td_sr_album: 'Album name',
-    td_sr_duration: 'Track duration in seconds',
-    td_sr_coverurl: 'Album cover image URL',
-    td_sr_platform: 'Source platform identifier (e.g. <code>"netease"</code>)',
-    p_stream_info: 'Contains the streaming URL and audio format details for a track.',
-    td_si_url: 'Streamable audio URL',
-    td_si_format: 'Audio format (e.g. <code>"mp3"</code>, <code>"flac"</code>, <code>"aac"</code>)',
-    td_si_bitrate: 'Audio bitrate in kbps',
-    td_si_expiresat: 'URL expiration timestamp (Unix ms)',
-    p_lyrics: 'Represents time-synced lyrics for a track. Each line has a timestamp and text content.',
-    td_ll_time: 'Timestamp in seconds from track start',
-    td_ll_text: 'Lyric text content',
-    td_ll_translation: 'Translated lyric text',
-    td_ml_trackid: 'Track ID this lyrics belongs to',
-    td_ml_lines: 'Array of time-synced lyric lines',
-    h_netease_connector: 'NeteaseConnector',
-    p_netease_intro: 'The built-in connector for NetEase Cloud Music. It provides access to search, streaming, and lyrics from the NetEase platform.',
-    h_netease_capabilities: 'Capabilities',
-    td_nc_cap_search: 'Search tracks by keyword',
-    td_nc_cap_stream: 'Get streamable audio URLs',
-    td_nc_cap_lyrics: 'Fetch time-synced lyrics with translations',
-    h_netease_config: 'Configuration',
-    td_nc_apibase: 'Base URL for the NetEase API proxy',
-    td_nc_cookie: 'NetEase login cookie for authenticated access (higher quality streams)',
-    td_nc_timeout: 'Request timeout in milliseconds (default: 10000)',
-    td_nc_quality: 'Preferred audio quality level (default: <code>"higher"</code>)',
-    h_netease_example: 'Example',
-    h_creating_connector: 'Creating a Connector',
-    p_creating_intro: 'You can extend MusicConnect by implementing the <code>MusicConnector</code> interface. Follow these steps to create a custom connector for any music platform.',
-    h_step1: 'Step 1: Define the connector class',
-    h_step2: 'Step 2: Register the connector',
-    h_step3: 'Step 3: Handle capabilities',
-    p_step3: 'If your connector does not support a capability (e.g. lyrics), declare only the supported ones in <code>meta.capabilities</code> and return <code>null</code> from the unsupported method. Consumers should check capabilities before calling:',
-    h_id_convention: 'Connector ID Convention',
-    p_id_convention_intro: 'To avoid ID collisions across different music platforms, all <code>trackId</code> values must follow the <code>platform:id</code> format.',
-    h_id_format: 'Format',
-    h_id_rules: 'Rules',
-    li_id_rule1: 'The <code>platform</code> segment must match the connector\'s <code>meta.id</code>',
-    li_id_rule2: 'The <code>id</code> segment is the platform\'s native track identifier',
-    li_id_rule3: 'Connectors must generate <code>trackId</code> in this format when returning search results',
-    li_id_rule4: 'Connectors must parse and strip the prefix when making platform API calls',
-    h_id_parsing: 'Parsing example',
-    search_no_results: 'No results found',
-    search_results_count: '{n} section(s) found',
-  },
-  zh: {
-    search_placeholder: '搜索文档...',
-    nav_guide: '指南', nav_api: 'API 参考', nav_connectors: '连接器', nav_advanced: '进阶', nav_links: '链接',
-    nav_overview: '概览', nav_quick_start: '快速开始',
-    nav_music_connector: '连接器接口',
-    nav_netease_connector: '网易云连接器',
-    nav_creating_connector: '创建连接器',
-    nav_id_convention: '连接器 ID 规范',
-    toc_title: '本页目录',
-    h_overview: '概览',
-    p_overview_intro: 'MusicConnect 是 DancingMusic 的音乐数据源连接器库。它提供了一个统一的接口来连接多个音乐平台，让你可以通过单一、一致的 API 搜索曲目、获取元数据、播放音频流和获取歌词。',
-    h_architecture: '架构',
-    p_architecture_desc: 'MusicConnect 位于 MusicStoreSdk 和各个平台连接器之间，通过中央注册表进行管理：',
-    p_overview_features: '核心特性：',
-    li_feature_unified: '为所有音乐平台提供统一的连接器接口',
-    li_feature_registry: '中央注册表管理多个连接器',
-    li_feature_search: '跨平台搜索、流式播放和歌词获取',
-    li_feature_extensible: '可扩展架构，方便添加自定义连接器',
-    li_feature_netease: '内置网易云音乐连接器',
-    h_quick_start: '快速开始', h_install: '安装', h_usage: '使用',
-    h_music_connector: '连接器接口',
-    p_music_connector: '所有连接器必须实现 <code>MusicConnector</code> 接口。这是注册表和调用方依赖的契约。',
-    th_method: '方法', th_signature: '签名', th_desc: '描述', th_type: '类型', th_field: '字段', th_option: '选项',
-    td_mc_meta: '只读连接器元数据，描述平台信息',
-    td_mc_search: '按关键词搜索曲目，支持分页选项',
-    td_mc_gettrack: '根据 ID 获取曲目详细信息',
-    td_mc_getstreamurl: '获取曲目的流式播放 URL 和格式信息',
-    td_mc_getlyrics: '获取时间同步歌词；不可用时返回 null',
-    p_connector_meta: '描述连接器及其功能的元数据。每个连接器通过 <code>meta</code> 属性暴露此信息。',
-    td_meta_id: '唯一连接器标识符（如 <code>"netease"</code>）',
-    td_meta_name: '人类可读的显示名称',
-    td_meta_icon: '用于界面显示的图标 URL 或 emoji',
-    td_meta_description: '连接器简要描述',
-    td_meta_version: '连接器版本号（semver）',
-    td_meta_capabilities: '支持的能力列表（如 <code>["search", "stream", "lyrics"]</code>）',
-    p_search_result: '表示搜索或查找返回的单个曲目。',
-    td_sr_trackid: '唯一曲目 ID，格式为 <code>platform:id</code>',
-    td_sr_title: '曲目标题',
-    td_sr_artist: '艺术家名称',
-    td_sr_album: '专辑名称',
-    td_sr_duration: '曲目时长（秒）',
-    td_sr_coverurl: '专辑封面图片 URL',
-    td_sr_platform: '来源平台标识符（如 <code>"netease"</code>）',
-    p_stream_info: '包含曲目的流式播放 URL 和音频格式详情。',
-    td_si_url: '可流式播放的音频 URL',
-    td_si_format: '音频格式（如 <code>"mp3"</code>、<code>"flac"</code>、<code>"aac"</code>）',
-    td_si_bitrate: '音频比特率（kbps）',
-    td_si_expiresat: 'URL 过期时间戳（Unix 毫秒）',
-    p_lyrics: '表示曲目的时间同步歌词。每行包含时间戳和文本内容。',
-    td_ll_time: '从曲目开始的时间戳（秒）',
-    td_ll_text: '歌词文本内容',
-    td_ll_translation: '翻译歌词文本',
-    td_ml_trackid: '歌词所属的曲目 ID',
-    td_ml_lines: '时间同步歌词行数组',
-    h_netease_connector: '网易云连接器',
-    p_netease_intro: '内置的网易云音乐连接器。提供从网易云平台搜索、流式播放和获取歌词的功能。',
-    h_netease_capabilities: '功能',
-    td_nc_cap_search: '按关键词搜索曲目',
-    td_nc_cap_stream: '获取可流式播放的音频 URL',
-    td_nc_cap_lyrics: '获取带翻译的时间同步歌词',
-    h_netease_config: '配置',
-    td_nc_apibase: '网易云 API 代理的基础 URL',
-    td_nc_cookie: '网易云登录 Cookie，用于认证访问（更高音质流）',
-    td_nc_timeout: '请求超时时间（毫秒，默认：10000）',
-    td_nc_quality: '首选音频质量等级（默认：<code>"higher"</code>）',
-    h_netease_example: '示例',
-    h_creating_connector: '创建连接器',
-    p_creating_intro: '你可以通过实现 <code>MusicConnector</code> 接口来扩展 MusicConnect。按照以下步骤为任意音乐平台创建自定义连接器。',
-    h_step1: '步骤一：定义连接器类',
-    h_step2: '步骤二：注册连接器',
-    h_step3: '步骤三：处理功能支持',
-    p_step3: '如果你的连接器不支持某个功能（如歌词），只在 <code>meta.capabilities</code> 中声明已支持的功能，并在不支持的方法中返回 <code>null</code>。调用方应在调用前检查功能：',
-    h_id_convention: '连接器 ID 规范',
-    p_id_convention_intro: '为避免不同音乐平台间的 ID 冲突，所有 <code>trackId</code> 值必须遵循 <code>platform:id</code> 格式。',
-    h_id_format: '格式',
-    h_id_rules: '规则',
-    li_id_rule1: '<code>platform</code> 部分必须与连接器的 <code>meta.id</code> 匹配',
-    li_id_rule2: '<code>id</code> 部分是平台的原生曲目标识符',
-    li_id_rule3: '连接器在返回搜索结果时必须以此格式生成 <code>trackId</code>',
-    li_id_rule4: '连接器在调用平台 API 时必须解析并去除前缀',
-    h_id_parsing: '解析示例',
-    search_no_results: '未找到结果',
-    search_results_count: '找到 {n} 个章节',
-  }
-};
-
-let currentLang = localStorage.getItem('doc-lang') || 'en';
-let currentTheme = localStorage.getItem('doc-theme') || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
-
-function applyTheme(t) {
-  currentTheme = t;
-  document.documentElement.setAttribute('data-theme', t);
-  document.getElementById('themeBtn').textContent = t === 'dark' ? '☀' : '☾';
-  localStorage.setItem('doc-theme', t);
-}
-
-function toggleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
-
-function applyLang(lang) {
-  currentLang = lang;
-  const dict = i18n[lang] || i18n.en;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (dict[key] != null) el.innerHTML = dict[key];
-  });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    if (dict[key] != null) el.placeholder = dict[key];
-  });
-  document.getElementById('langBtn').textContent = lang === 'zh' ? '中' : 'EN';
-  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-  localStorage.setItem('doc-lang', lang);
-}
-
-function toggleLang() { applyLang(currentLang === 'zh' ? 'en' : 'zh'); }
-
-// ── Search ──
-const searchInput = document.getElementById('searchInput');
-const searchResults = document.getElementById('searchResults');
-const sections = document.querySelectorAll('.doc-article section[id]');
-const navLinks = document.querySelectorAll('.nav-link[data-section]');
-
-searchInput.addEventListener('input', function() {
-  const q = this.value.trim().toLowerCase();
-  if (!q) {
-    sections.forEach(s => s.classList.remove('search-hidden'));
-    navLinks.forEach(l => l.classList.remove('search-hidden'));
-    searchResults.classList.remove('show');
-    return;
-  }
-  let count = 0;
-  sections.forEach(s => {
-    const text = (s.textContent + ' ' + (s.dataset.searchKeywords || '')).toLowerCase();
-    const match = text.includes(q);
-    s.classList.toggle('search-hidden', !match);
-    if (match) count++;
-  });
-  navLinks.forEach(l => {
-    const sid = l.dataset.section;
-    const sec = document.getElementById(sid);
-    l.classList.toggle('search-hidden', sec ? sec.classList.contains('search-hidden') : false);
-  });
-  const dict = i18n[currentLang] || i18n.en;
-  searchResults.textContent = count ? dict.search_results_count.replace('{n}', count) : dict.search_no_results;
-  searchResults.classList.add('show');
-});
-
-// ── Scroll highlight ──
-const headings = document.querySelectorAll('h1[id], h2[id]');
-const allNavLinks = document.querySelectorAll('.nav-link[href^="#"]');
-const tocLinks = document.querySelectorAll('.toc-link');
-window.addEventListener('scroll', () => {
-  let cur = '';
-  headings.forEach(s => { if (scrollY >= s.offsetTop - 80) cur = s.id || s.closest('section[id]')?.id || ''; });
-  sections.forEach(s => { if (scrollY >= s.offsetTop - 80) cur = s.id; });
-  allNavLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
-  tocLinks.forEach(l => { l.style.color = l.getAttribute('href') === '#' + cur ? 'var(--accent)' : ''; });
-}, { passive: true });
-
-function toggleNav() { document.getElementById('nav').classList.toggle('open'); document.getElementById('ov').classList.toggle('show'); }
-
-// ── Init ──
-applyTheme(currentTheme);
-applyLang(currentLang);
-</script>
-</body>
+      for (const a of anchors) {
+        a.addEventListener('click', (event) => {
+          event.preventDefault();
+          const target = document.getElementById(a.getAttribute('data-target'));
+          if (!target || !article) return;
+          article.scrollTo({ top: target.offsetTop - 20, behavior: 'smooth' });
+        });
+      }
+    </script>
+  </body>
 </html>

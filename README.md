@@ -2,6 +2,9 @@
 
 Music data source connectors for DancingMusic — pluggable adapters for NetEase Cloud Music, and more.
 
+Documentation (Open-Design page):
+[https://dancingmusic.github.io/MusicConnect/](https://dancingmusic.github.io/MusicConnect/)
+
 ## Install
 
 ```bash
