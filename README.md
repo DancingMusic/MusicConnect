@@ -1,77 +1,52 @@
 # MusicConnect
 
-Music data source connectors for DancingMusic — pluggable adapters for NetEase Cloud Music, and more.
+MusicConnect is the official documentation hub for DancingMusic music connector development.
 
-Documentation (Open-Design page):
+Documentation:
 [https://dancingmusic.github.io/MusicConnect/](https://dancingmusic.github.io/MusicConnect/)
 
-## Install
+## Boundary
 
-```bash
-npm install @dancingmusic/music-connect @dancingmusic/music-store-sdk
-```
+This repository is not a combined implementation package. Concrete connectors live in independent repositories named `DancingMusic/MusicConnect-<Name>` and are loaded by the host at runtime through pinned CDN URLs.
 
-## Quick Start
+Implementation repositories include:
 
-```typescript
-import { MusicStoreClient } from "@dancingmusic/music-store-sdk";
-import { NeteaseConnector } from "@dancingmusic/music-connect/netease";
-
-const client = new MusicStoreClient({ baseUrl: "https://api.example.com" });
-
-// Register the NetEase connector
-const netease = new NeteaseConnector();
-await client.registerConnector(netease);
-
-// Activate it as the current data source
-client.connectors.activate("netease-cloud-music");
-
-// Search for music
-const result = await client.search({ keyword: "周杰伦" });
-console.log(result.tracks);
-
-// Get stream URL
-const stream = await client.getStreamUrl("netease:123456");
-console.log(stream?.url);
-
-// Get lyrics
-const lyrics = await client.getLyrics("netease:123456");
-console.log(lyrics?.timeline);
-```
-
-## Custom API Base URL
-
-```typescript
-const netease = new NeteaseConnector();
-await netease.init({ apiBaseUrl: "https://your-netease-api.example.com" });
-await client.registerConnector(netease);
-```
-
-## Available Connectors
-
-| Connector | ID | Capabilities |
+| Repo | Source | Demo |
 |---|---|---|
-| NetEase Cloud Music | `netease-cloud-music` | search, stream, lyrics |
+| [MusicConnect-NetEase](https://github.com/DancingMusic/MusicConnect-NetEase) | NetEase Cloud Music | https://dancingmusic.github.io/MusicConnect-NetEase/ |
+| [MusicConnect-iTunes](https://github.com/DancingMusic/MusicConnect-iTunes) | Apple iTunes Search + RSS charts | https://dancingmusic.github.io/MusicConnect-iTunes/ |
+| [MusicConnect-Archive](https://github.com/DancingMusic/MusicConnect-Archive) | Internet Archive | https://dancingmusic.github.io/MusicConnect-Archive/ |
+| [MusicConnect-Radio](https://github.com/DancingMusic/MusicConnect-Radio) | Radio Browser | https://dancingmusic.github.io/MusicConnect-Radio/ |
+| [MusicConnect-QQMusic](https://github.com/DancingMusic/MusicConnect-QQMusic) | QQ Music | https://dancingmusic.github.io/MusicConnect-QQMusic/ |
+| [MusicConnect-Spotify](https://github.com/DancingMusic/MusicConnect-Spotify) | Spotify Web API | https://dancingmusic.github.io/MusicConnect-Spotify/ |
 
-## Creating a Connector
+## Connector Contract
 
-Implement the `MusicConnector` interface from `@dancingmusic/music-store-sdk`:
+Each `MusicConnect-*` repository should:
 
-```typescript
-import type { MusicConnector } from "@dancingmusic/music-store-sdk";
+1. Peer-depend on `@dancingmusic/music-store`.
+2. Default-export a class implementing `MusicConnector`.
+3. Declare `meta.id`, `meta.name`, `meta.version`, `meta.capabilities`, and optional `meta.configSchema`.
+4. Return platform-prefixed track IDs such as `netease:123456`.
+5. Build and commit `dist/index.js` for CDN loading.
+6. Ship contract tests for every declared capability.
+7. Publish `docs/index.html` as a GitHub Pages demo.
 
-export class MyConnector implements MusicConnector {
-  readonly meta = {
-    id: "my-source",
-    name: "My Music Source",
-    version: "0.1.0",
-    capabilities: ["search", "stream"] as const,
-  };
+Pinned host URL example:
 
-  async search(query) { /* ... */ }
-  async getTrack(trackId) { /* ... */ }
-  async getStreamUrl(trackId) { /* ... */ }
-}
+```text
+https://cdn.jsdelivr.net/gh/DancingMusic/MusicConnect-YourName@vX.Y.Z/dist/index.js
+```
+
+See the main OpenSpec for the full runtime boundary:
+[DancingMusic/openspec/STORE_SDK_OPENSPEC.md](https://github.com/DancingMusic/DancingMusic/blob/main/openspec/STORE_SDK_OPENSPEC.md).
+
+## GitHub Pages
+
+The static documentation site lives in `docs/index.html` and deploys through `.github/workflows/pages.yml` to:
+
+```text
+https://dancingmusic.github.io/MusicConnect/
 ```
 
 ## License
