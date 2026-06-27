@@ -594,6 +594,50 @@
 
       <section id="quick-start">
         <h2>快速开始</h2>
+        <p>
+          开发连接器时，先在你的独立 <code>MusicConnect-*</code> 仓库安装 MusicStore SDK 合约。
+          <code>MusicConnect</code> 本仓库只作为文档入口，不作为多个平台实现的安装包。
+        </p>
+        <h3 id="npm-install">npm install 使用方式</h3>
+        <p>
+          当前 SDK 尚未发布到 npm registry，可以先通过 GitHub 源安装。等
+          <code>@dancingmusic/music-store</code> 发布后，再切换到 registry 包。
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">bash — npm install</span>
+            <button class="copy-btn">复制</button>
+          </div>
+          <pre><code>npm install github:DancingMusic/MusicStore#main
+npm install -D typescript tsup vitest</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">bash — registry package once published</span>
+            <button class="copy-btn">复制</button>
+          </div>
+          <pre><code>npm install @dancingmusic/music-store</code></pre>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">typescript — src/index.ts</span>
+            <button class="copy-btn">复制</button>
+          </div>
+          <pre><code><span class="t-kw">import type</span> { MusicConnector } <span class="t-kw">from</span> <span class="t-str">'@dancingmusic/music-store'</span>;
+
+<span class="t-kw">export default class</span> YourConnector <span class="t-kw">implements</span> MusicConnector {
+  readonly meta = {
+    id: <span class="t-str">'your-source'</span>,
+    name: <span class="t-str">'Your Source'</span>,
+    version: <span class="t-str">'0.1.0'</span>,
+    capabilities: [<span class="t-str">'search'</span>, <span class="t-str">'stream'</span>] as const,
+  };
+
+  async init(config: Record&lt;string, unknown&gt;) {}
+  async search(query: string) { <span class="t-cmt">/* return playable tracks */</span> }
+  async getStreamUrl(trackId: string) { <span class="t-cmt">/* return stream info or null */</span> }
+}</code></pre>
+        </div>
         <ol class="steps">
           <li>
             <div class="step-body">
@@ -788,7 +832,7 @@
 
       <hr>
       <p class="article-footer">
-        本页最后更新：2026-06-11 ·
+        本页最后更新：2026-06-28 ·
         <a href="https://github.com/DancingMusic/MusicConnect">在 GitHub 上查看</a> ·
         <a href="https://github.com/DancingMusic/DancingMusic/blob/main/openspec/STORE_SDK_OPENSPEC.md">主仓 OpenSpec</a>
       </p>
@@ -799,7 +843,12 @@
       <ul class="toc-list">
         <li><a href="#overview" class="toc-link active">总览</a></li>
         <li><a href="#repo-boundary" class="toc-link">仓库边界</a></li>
-        <li><a href="#quick-start" class="toc-link">快速开始</a></li>
+        <li>
+          <a href="#quick-start" class="toc-link">快速开始</a>
+          <ul class="toc-list">
+            <li><a href="#npm-install" class="toc-link">npm install</a></li>
+          </ul>
+        </li>
         <li>
           <a href="#contract" class="toc-link">MusicConnector 接口</a>
           <ul class="toc-list">
