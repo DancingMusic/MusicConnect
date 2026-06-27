@@ -70,9 +70,18 @@
       width: 28px;
       height: 28px;
       border-radius: 7px;
-      background: var(--accent);
+      background: oklch(100% 0 0);
       display: grid;
       place-items: center;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px var(--border);
+    }
+
+    .logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
     .hd-sep {
@@ -497,11 +506,7 @@
   <header class="header">
     <a href="#top" class="logo">
       <span class="logo-mark" aria-hidden="true">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-          <path d="M3 10.5V3.8L10.8 2.2V8.9" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="3" cy="11" r="1.7" fill="white"/>
-          <circle cx="10.8" cy="9.4" r="1.7" fill="white"/>
-        </svg>
+        <img src="assets/dancingmusic-logo.png" alt="">
       </span>
       MusicConnect
     </a>
