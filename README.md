@@ -38,8 +38,8 @@ Pinned host URL example:
 https://cdn.jsdelivr.net/gh/DancingMusic/MusicConnect-YourName@vX.Y.Z/dist/index.js
 ```
 
-See the main OpenSpec for the full runtime boundary:
-[DancingMusic/openspec/STORE_SDK_OPENSPEC.md](https://github.com/DancingMusic/DancingMusic/blob/main/openspec/STORE_SDK_OPENSPEC.md).
+See the unified documentation for the full runtime boundary:
+[MusicConnect SDK and host integration](https://dancingmusic.github.io/docs/connectors/sdk).
 
 ## GitHub Pages
 
