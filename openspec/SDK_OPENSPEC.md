@@ -21,7 +21,7 @@ It does not own concrete platform implementations.
 
 MUST:
 
-- Publish the official connector API documentation at `https://dancingmusic.github.io/MusicConnect/`.
+- Publish the official connector API documentation from the unified docs site at `https://dancingmusic.github.io/docs/connectors/sdk`.
 - Keep the page in `docs/index.html`.
 - Use the Open Design documentation page structure: inline-start navigation, scrollable article body, inline-end table of contents.
 - Link to the independent `MusicConnect-*` implementation repositories and their own demo pages.
@@ -57,8 +57,7 @@ Each implementation repository MUST:
 The DancingMusic host should use this repository's Pages URL for official connector development documentation and specification links:
 
 ```text
-https://dancingmusic.github.io/MusicConnect/
-https://dancingmusic.github.io/MusicConnect/#config-schema
+https://dancingmusic.github.io/docs/connectors/sdk
 ```
 
 Per-connector demo links remain tied to each implementation repository:

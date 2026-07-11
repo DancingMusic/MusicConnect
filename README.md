@@ -3,7 +3,7 @@
 MusicConnect is the official documentation hub for DancingMusic music connector development.
 
 Documentation:
-[https://dancingmusic.github.io/MusicConnect/](https://dancingmusic.github.io/MusicConnect/)
+[https://dancingmusic.github.io/docs/connectors/sdk](https://dancingmusic.github.io/docs/connectors/sdk)
 
 ## Boundary
 
@@ -46,7 +46,7 @@ See the main OpenSpec for the full runtime boundary:
 The static documentation site lives in `docs/index.html` and deploys through `.github/workflows/pages.yml` to:
 
 ```text
-https://dancingmusic.github.io/MusicConnect/
+https://dancingmusic.github.io/docs/connectors/sdk
 ```
 
 ## License

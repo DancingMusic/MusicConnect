@@ -12,8 +12,7 @@
 ## Milestone B — Host Integration
 
 - [x] Define the host link contract for official connector development docs:
-  - `https://dancingmusic.github.io/MusicConnect/`
-  - `https://dancingmusic.github.io/MusicConnect/#config-schema`
+  - `https://dancingmusic.github.io/docs/connectors/sdk`
 - [ ] Keep the DancingMusic host aligned when connector documentation anchors change.
 
 ## Milestone C — Maintenance
