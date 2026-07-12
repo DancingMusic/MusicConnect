@@ -34,6 +34,15 @@ Each `MusicConnect-*` repository should:
 6. Ship contract tests for every declared capability.
 7. Publish `docs/index.html` as a GitHub Pages demo.
 
+### Host platform declaration
+
+`meta.supportedHosts` uses the canonical host ids `web`, `desktop`, `ios`, and
+`android`. Native mobile support is explicit: a missing `supportedHosts` value
+keeps the legacy Web/desktop compatibility default and MUST NOT be interpreted
+as iOS or Android support. An implementation may add `ios` or `android` only
+after its network, playback, login and secure-storage paths have been validated
+on that runtime.
+
 Implementations may declare a shared `familyId` and an `anonymous`, `account`,
 or `hybrid` variant. Anonymous and account artifacts keep different ids and
 credential namespaces even when they target the same platform.
@@ -62,6 +71,13 @@ status/actions. The host owns persistence:
   metadata; connector implementations do not create a second state database.
 - Public Pages are documentation/read-only demos and must not accept live user
   credentials.
+- Cross-device discovery and remote control do not copy connector credentials.
+  Private keys and plaintext Cookie, Token, password, authorization and API-key
+  values stay in the originating device's secure storage and must never enter a
+  cloud database or relay. A device-migration feature may relay only an
+  explicitly end-to-end encrypted credential envelope; its decryption key must
+  remain device-held and the envelope must not be part of the default remote
+  control flow.
 
 ## GitHub Pages
 
