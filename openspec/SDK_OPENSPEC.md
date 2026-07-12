@@ -51,6 +51,9 @@ Each implementation repository MUST:
 - provide contract tests
 - publish its own `docs/index.html` demo through GitHub Pages
 - release immutable semver tags such as `v0.4.0`
+- peer-depend on the canonical `@dancingmusic/music-connect` contract
+- use distinct implementation ids for anonymous/account variants and group
+  them through `familyId`
 
 ## Host Link Contract
 

@@ -1,6 +1,7 @@
 # MusicConnect
 
-MusicConnect is the official documentation hub for DancingMusic music connector development.
+MusicConnect is the canonical TypeScript protocol and documentation entry for
+DancingMusic music connector development. It contains no platform implementation.
 
 Documentation:
 [https://dancingmusic.github.io/docs/connectors/sdk](https://dancingmusic.github.io/docs/connectors/sdk)
@@ -24,13 +25,17 @@ Implementation repositories include:
 
 Each `MusicConnect-*` repository should:
 
-1. Peer-depend on `@dancingmusic/music-store`.
+1. Peer-depend on `@dancingmusic/music-connect`.
 2. Default-export a class implementing `MusicConnector`.
 3. Declare `meta.id`, `meta.name`, `meta.version`, `meta.capabilities`, and optional `meta.configSchema`.
 4. Return platform-prefixed track IDs such as `netease:123456`.
 5. Build and commit `dist/index.js` for CDN loading.
 6. Ship contract tests for every declared capability.
 7. Publish `docs/index.html` as a GitHub Pages demo.
+
+Implementations may declare a shared `familyId` and an `anonymous`, `account`,
+or `hybrid` variant. Anonymous and account artifacts keep different ids and
+credential namespaces even when they target the same platform.
 
 Pinned host URL example:
 
