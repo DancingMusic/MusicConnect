@@ -69,6 +69,10 @@ Each implementation repository MUST:
   are host metadata rather than connector-owned durable state.
 - Public Pages MUST NOT collect or persist real platform credentials. Account
   integration is tested in the host or with mocked provider responses.
+- Account implementations MAY receive a host context exposing bounded official
+  provider operation IDs. Implementations MUST NOT pass arbitrary URLs,
+  headers or credentials through this context. Provider cookies and request
+  endpoints remain host-owned.
 
 ## Host Link Contract
 
