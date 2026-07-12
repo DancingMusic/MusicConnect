@@ -5,7 +5,14 @@ export type MusicConnectorCapability =
   | "user-library" | "recommendations";
 export type MusicConnectorVariant = "anonymous" | "account" | "hybrid";
 export type MusicConnectorAuthRequirement = "none" | "optional" | "required";
-export type MusicConnectorHost = "web" | "desktop";
+/**
+ * Host runtimes on which a connector implementation has been validated.
+ *
+ * Mobile support is opt-in: hosts must not infer `ios` or `android` support
+ * when an older connector omits `supportedHosts`.
+ */
+export const MUSIC_CONNECTOR_HOSTS = ["web", "desktop", "ios", "android"] as const;
+export type MusicConnectorHost = (typeof MUSIC_CONNECTOR_HOSTS)[number];
 
 export interface ConnectorConfigField {
   key: string;
@@ -22,6 +29,10 @@ export interface MusicConnectorMeta {
   familyId?: string;
   variant?: MusicConnectorVariant;
   authRequirement?: MusicConnectorAuthRequirement;
+  /**
+   * Explicitly validated host runtimes. Omission keeps the legacy
+   * `web`/`desktop` compatibility default and never opts into mobile.
+   */
   supportedHosts?: MusicConnectorHost[];
   name: string;
   icon?: string;

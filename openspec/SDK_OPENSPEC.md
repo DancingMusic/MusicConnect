@@ -1,7 +1,7 @@
 # OpenSpec: MusicConnect Documentation Hub
 
 - Spec-ID: `music-connect-docs-openspec`
-- Version: `2.1.0`
+- Version: `2.2.0`
 - Status: `Active`
 - Last-Updated: `2026-07-12`
 
@@ -54,6 +54,20 @@ Each implementation repository MUST:
 - use distinct implementation ids for anonymous/account variants and group
   them through `familyId`
 
+## Host platform contract
+
+- `MusicConnectorHost` and `MUSIC_CONNECTOR_HOSTS` define the canonical host
+  ids `web`, `desktop`, `ios` and `android`.
+- `meta.supportedHosts` MUST list only runtimes on which that connector's
+  network, playback, login and secure-storage behavior has been validated.
+- Native mobile support is opt-in. A missing `supportedHosts` value preserves
+  the legacy Web/desktop compatibility default and MUST NOT make the connector
+  discoverable on iOS or Android.
+- A connector declared for one mobile runtime MUST NOT be assumed compatible
+  with the other runtime.
+- Store manifests and host filtering MUST use the same canonical ids and MUST
+  reject unknown platform ids.
+
 ## Login persistence boundary
 
 - Implementations own provider-specific login protocol, status and actions;
@@ -69,6 +83,21 @@ Each implementation repository MUST:
   are host metadata rather than connector-owned durable state.
 - Public Pages MUST NOT collect or persist real platform credentials. Account
   integration is tested in the host or with mocked provider responses.
+
+## Cross-device credential boundary
+
+- Same-account discovery, device approval and remote playback commands MUST NOT
+  imply connector credential replication.
+- Connector private keys and plaintext Cookie, Token, password, authorization,
+  credential and API-key values MUST remain in device-local secure storage and
+  MUST NOT be written to cloud databases, command payloads or relay logs.
+- The default cross-device flow relays only non-secret device metadata and
+  authenticated or end-to-end encrypted remote-control messages.
+- A future explicit device-migration flow MAY relay a credential envelope only
+  when the payload is end-to-end encrypted for the destination device, the
+  decryption key remains device-held, and the envelope is never exposed as
+  connector config or diagnostics. This exception does not permit plaintext or
+  cloud-held decryption keys.
 
 ## Host Link Contract
 
