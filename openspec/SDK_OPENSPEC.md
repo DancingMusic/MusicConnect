@@ -1,9 +1,9 @@
 # OpenSpec: MusicConnect Documentation Hub
 
 - Spec-ID: `music-connect-docs-openspec`
-- Version: `2.0.0`
+- Version: `2.1.0`
 - Status: `Active`
-- Last-Updated: `2026-06-11`
+- Last-Updated: `2026-07-12`
 
 ## Scope
 
@@ -43,17 +43,32 @@ DancingMusic/MusicConnect-<Name>
 
 Each implementation repository MUST:
 
-- peer-depend on `@dancingmusic/music-store`
+- peer-depend on the canonical `@dancingmusic/music-connect` contract
 - default-export a class implementing `MusicConnector`
 - expose stable metadata through `meta`
 - declare only capabilities that are actually implemented
 - build and commit `dist/index.js`
 - provide contract tests
-- publish its own `docs/index.html` demo through GitHub Pages
+- publish a credential-free `docs/index.html` documentation/demo page through GitHub Pages
 - release immutable semver tags such as `v0.4.0`
-- peer-depend on the canonical `@dancingmusic/music-connect` contract
 - use distinct implementation ids for anonymous/account variants and group
   them through `familyId`
+
+## Login persistence boundary
+
+- Implementations own provider-specific login protocol, status and actions;
+  the host owns credential persistence and non-secret usage state.
+- Login/config inputs may contain user-supplied secrets, but Cookie, Token,
+  password, authorization, credential and key-like fields MUST NOT be returned
+  through `configPatch` or written to URLs, logs, Store records, diagnostics or
+  renderer `localStorage`.
+- The host persists submitted secrets under the installation id, injects them
+  only through that connector's `init()` runtime config, and clears them on
+  logout, uninstall and reset.
+- `authState`, `lastAuthenticatedAt`, `lastUsedAt` and storage-backend identity
+  are host metadata rather than connector-owned durable state.
+- Public Pages MUST NOT collect or persist real platform credentials. Account
+  integration is tested in the host or with mocked provider responses.
 
 ## Host Link Contract
 

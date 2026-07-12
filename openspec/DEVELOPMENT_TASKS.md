@@ -1,6 +1,6 @@
 # MusicConnect Documentation Tasks
 
-- Last-Updated: `2026-06-11`
+- Last-Updated: `2026-07-12`
 
 ## Milestone A — Documentation Hub
 
@@ -17,6 +17,7 @@
 
 ## Milestone C — Maintenance
 
+- [x] Document host-owned secret persistence and non-secret usage/account state.
 - [ ] Review the page when `MusicStore` changes the `MusicConnector` contract.
 - [ ] Add changelog notes when the official connector release workflow changes.
 - [ ] Keep the official connector index in sync with `DancingMusic` default records.

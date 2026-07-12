@@ -19,6 +19,7 @@ Implementation repositories include:
 | [MusicConnect-Archive](https://github.com/DancingMusic/MusicConnect-Archive) | Internet Archive | https://dancingmusic.github.io/MusicConnect-Archive/ |
 | [MusicConnect-Radio](https://github.com/DancingMusic/MusicConnect-Radio) | Radio Browser | https://dancingmusic.github.io/MusicConnect-Radio/ |
 | [MusicConnect-QQMusic](https://github.com/DancingMusic/MusicConnect-QQMusic) | QQ Music | https://dancingmusic.github.io/MusicConnect-QQMusic/ |
+| [MusicConnect-KuGou](https://github.com/DancingMusic/MusicConnect-KuGou) | KuGou Music | https://dancingmusic.github.io/MusicConnect-KuGou/ |
 | [MusicConnect-Spotify](https://github.com/DancingMusic/MusicConnect-Spotify) | Spotify Web API | https://dancingmusic.github.io/MusicConnect-Spotify/ |
 
 ## Connector Contract
@@ -45,6 +46,22 @@ https://cdn.jsdelivr.net/gh/DancingMusic/MusicConnect-YourName@vX.Y.Z/dist/index
 
 See the unified documentation for the full runtime boundary:
 [MusicConnect SDK and host integration](https://dancingmusic.github.io/docs/connectors/sdk).
+
+## Login and persisted state
+
+Connectors implement provider-specific `login()` intents and return account
+status/actions. The host owns persistence:
+
+- Cookie, Token, password, credential and API-key fields must never be returned
+  through `configPatch`, written to URLs/logs, or stored in browser
+  `localStorage`.
+- The host stores submitted secret fields in its per-installation credential
+  vault, supplies them only through that connector's `init()`, and clears them
+  on logout or uninstall.
+- `authState`, last authentication time and last use time are non-secret host
+  metadata; connector implementations do not create a second state database.
+- Public Pages are documentation/read-only demos and must not accept live user
+  credentials.
 
 ## GitHub Pages
 
