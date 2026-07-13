@@ -68,9 +68,13 @@ export interface MusicConnectorLoginResult {
   configPatch?: Record<string, unknown>;
 }
 
+export interface MusicConnectorHostContext {
+  officialProviderRequest?<T = unknown>(operation: string, params?: Record<string, unknown>): Promise<T>;
+}
+
 export interface MusicConnector {
   readonly meta: MusicConnectorMeta;
-  init?(config?: Record<string, unknown>): Promise<void>;
+  init?(config?: Record<string, unknown>, host?: MusicConnectorHostContext): Promise<void>;
   dispose?(): void;
   search(query: MusicListQuery): Promise<MusicSearchResult>;
   getTrack(trackId: string): Promise<MusicTrack | null>;
