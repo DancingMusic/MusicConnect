@@ -69,6 +69,10 @@ status/actions. The host owns persistence:
 - Public Pages are documentation/read-only demos and must not accept live user
   credentials.
 
+Desktop account connectors may use the optional host context passed to `init()`
+for reviewed official-provider operation IDs. This is not a general network
+proxy: connectors cannot supply URLs, headers or Cookie values.
+
 ## GitHub Pages
 
 The static documentation site lives in `docs/index.html` and deploys through `.github/workflows/pages.yml` to:
