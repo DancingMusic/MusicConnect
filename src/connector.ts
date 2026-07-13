@@ -60,9 +60,16 @@ export interface MusicConnectorLoginAction {
   type: MusicConnectorLoginActionType; label?: string; qrUrl?: string; imageUrl?: string;
   url?: string; cookieCapture?: MusicConnectorLoginCookieCapture; fields?: ConnectorConfigField[]; message?: string;
 }
+export interface MusicConnectorMembership {
+  active: boolean;
+  label?: string;
+  tier?: string;
+  expiresAt?: number;
+}
 export interface MusicConnectorLoginResult {
   status: MusicConnectorLoginStatus; flow?: MusicConnectorLoginFlow; flowId?: string;
   actions?: MusicConnectorLoginAction[]; user?: { id?: string; name?: string; avatarUrl?: string };
+  membership?: MusicConnectorMembership;
   message?: string; expiresAt?: number; nextPollMs?: number;
   /** Non-secret configuration only. Hosts must reject Cookie/token/password values here. */
   configPatch?: Record<string, unknown>;

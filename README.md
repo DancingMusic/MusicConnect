@@ -38,6 +38,12 @@ Implementations may declare a shared `familyId` and an `anonymous`, `account`,
 or `hybrid` variant. Anonymous and account artifacts keep different ids and
 credential namespaces even when they target the same platform.
 
+Tracks may include optional `access` metadata describing whether playback is
+available, a preview, membership-gated, copyright-restricted,
+region-restricted or unavailable. Login results may include a structured
+`membership` summary. Both additions are backward-compatible and contain
+display metadata only; credentials and entitlement proofs remain host-owned.
+
 Pinned host URL example:
 
 ```text
