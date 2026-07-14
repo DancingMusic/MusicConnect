@@ -47,6 +47,15 @@ Connectors may also return structured `access.badges`, `access.entitlement`,
 and `access.preview` values so hosts can render provider-specific catalog facts
 without hard-coding provider response fields or accepting executable UI.
 
+Account connectors may independently declare `favorites-read` and
+`favorites-write`. The former exposes paginated remote favorite tracks through
+`listFavoriteTracks()`. The latter exposes the idempotent
+`setTrackFavorite(trackId, favorite)` operation: callers provide the desired
+final state instead of invoking a provider toggle. Unsupported connectors stay
+local-only, and the legacy `user-library` capability does not imply either new
+operation. See `openspec/USER_LIBRARY_SYNC.md` for synchronization and security
+rules.
+
 Pinned host URL example:
 
 ```text

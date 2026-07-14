@@ -1,6 +1,6 @@
 # MusicConnect Documentation Tasks
 
-- Last-Updated: `2026-07-12`
+- Last-Updated: `2026-07-15`
 
 ## Milestone A — Documentation Hub
 
@@ -14,6 +14,7 @@
 - [x] Define the host link contract for official connector development docs:
   - `https://dancingmusic.github.io/docs/connectors/sdk`
 - [ ] Keep the DancingMusic host aligned when connector documentation anchors change.
+- [x] Define provider-neutral, idempotent favorite-track read/write synchronization.
 
 ## Milestone C — Maintenance
 

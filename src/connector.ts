@@ -2,7 +2,7 @@ import type { MusicListQuery, MusicTrack } from "./types";
 
 export type MusicConnectorCapability =
   | "search" | "stream" | "lyrics" | "playlist" | "login"
-  | "user-library" | "recommendations";
+  | "user-library" | "favorites-read" | "favorites-write" | "recommendations";
 export type MusicConnectorVariant = "anonymous" | "account" | "hybrid";
 export type MusicConnectorAuthRequirement = "none" | "optional" | "required";
 export type MusicConnectorHost = "web" | "desktop";
@@ -42,6 +42,31 @@ export interface MusicPlaylist {
 export interface MusicPlaylistList { playlists: MusicPlaylist[]; total: number; page: number; pageSize: number; }
 export interface MusicPlaylistQuery {
   category?: string; page?: number; pageSize?: number; sort?: "hot" | "new" | "trending";
+}
+
+export interface MusicFavoriteTracksQuery {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface MusicFavoriteTrackList {
+  tracks: MusicTrack[];
+  total: number;
+  page: number;
+  pageSize: number;
+  /** Unix epoch milliseconds when the remote state was observed. */
+  syncedAt?: number;
+}
+
+export interface MusicFavoriteMutationResult {
+  /** Canonical provider-prefixed MusicTrack id. */
+  trackId: string;
+  /** Confirmed final remote favorite state. */
+  favorite: boolean;
+  /** Whether this request changed remote state, when the provider exposes it. */
+  changed?: boolean;
+  /** Unix epoch milliseconds when the final state was confirmed. */
+  syncedAt?: number;
 }
 
 export type MusicConnectorLoginStatus = "unsupported" | "anonymous" | "pending" | "authenticated" | "expired" | "error";
@@ -90,4 +115,11 @@ export interface MusicConnector {
   login?(request?: MusicConnectorLoginRequest): Promise<MusicConnectorLoginResult>;
   listPlaylists?(query?: MusicPlaylistQuery): Promise<MusicPlaylistList>;
   getPlaylistTracks?(playlistId: string, opts?: { page?: number; pageSize?: number }): Promise<MusicSearchResult>;
+  /** Requires the `favorites-read` capability. */
+  listFavoriteTracks?(query?: MusicFavoriteTracksQuery): Promise<MusicFavoriteTrackList>;
+  /**
+   * Requires the `favorites-write` capability. This is an idempotent set
+   * operation: `favorite` is the desired final state, never a toggle command.
+   */
+  setTrackFavorite?(trackId: string, favorite: boolean): Promise<MusicFavoriteMutationResult>;
 }

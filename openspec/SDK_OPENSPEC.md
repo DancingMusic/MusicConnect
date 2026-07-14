@@ -1,9 +1,9 @@
 # OpenSpec: MusicConnect Documentation Hub
 
 - Spec-ID: `music-connect-docs-openspec`
-- Version: `2.1.0`
+- Version: `2.2.0`
 - Status: `Active`
-- Last-Updated: `2026-07-12`
+- Last-Updated: `2026-07-15`
 
 ## Scope
 
@@ -53,6 +53,15 @@ Each implementation repository MUST:
 - release immutable semver tags such as `v0.4.0`
 - use distinct implementation ids for anonymous/account variants and group
   them through `familyId`
+
+## User library synchronization
+
+Account connectors MAY expose provider-neutral favorite-track synchronization
+under the granular `favorites-read` and `favorites-write` capabilities. Read
+support returns normalized `MusicTrack` pages. Write support accepts a desired
+boolean state and is idempotent; it MUST NOT expose a provider toggle endpoint
+directly. See `USER_LIBRARY_SYNC.md` for the full contract and security
+boundary.
 
 ## Login persistence boundary
 
