@@ -43,6 +43,9 @@ available, a preview, membership-gated, copyright-restricted,
 region-restricted or unavailable. Login results may include a structured
 `membership` summary. Both additions are backward-compatible and contain
 display metadata only; credentials and entitlement proofs remain host-owned.
+Connectors may also return structured `access.badges`, `access.entitlement`,
+and `access.preview` values so hosts can render provider-specific catalog facts
+without hard-coding provider response fields or accepting executable UI.
 
 Pinned host URL example:
 
