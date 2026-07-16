@@ -47,6 +47,14 @@ Connectors may also return structured `access.badges`, `access.entitlement`,
 and `access.preview` values so hosts can render provider-specific catalog facts
 without hard-coding provider response fields or accepting executable UI.
 
+Tracks and playlists should return their real provider artwork in `coverUrl`.
+Provider-specific URL construction stays inside the connector, while the
+matching exact HTTPS origins are reviewed separately in MusicStore as
+`permissions.artworkOrigins`. That permission lets a host create a safe native
+image resource without giving the connector Worker broader network access.
+Plugins receive the host's final current-song cover and never call connectors
+for artwork. See `openspec/ARTWORK_DELIVERY.md`.
+
 Account connectors may independently declare `favorites-read` and
 `favorites-write`. The former exposes paginated remote favorite tracks through
 `listFavoriteTracks()`. The latter exposes the idempotent
